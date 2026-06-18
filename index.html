@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Geely Bandung | Dealer Resmi Mobil Geely</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -308,12 +309,13 @@ footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:r
       </div>
       <span class="sec-count">03</span>
     </div>
-   <p style="text-align: center; margin-bottom: 32px; color: var(--g600); font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px;">
-    Klik foto jika ingin melihat lebih lanjut!
-</p>
+    
+    <p style="text-align: center; margin-bottom: 32px; color: var(--g600); font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px;">
+      Klik foto jika ingin melihat lebih lanjut!
+    </p>
+    
     <div class="models-grid">
 
-      <!-- EX5 -->
       <a href="ex-5.html" class="mcard fi fi-d1" style="text-decoration: none; color: inherit;">
         <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-EX-5-pc.webp'); background-size:cover; background-position:center;">
         </div>
@@ -325,7 +327,6 @@ footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:r
         </div>
       </a>
 
-      <!-- EX 2 -->
       <a href="ex-2.html" class="mcard fi fi-d2" style="text-decoration: none; color: inherit;">
         <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-EX-2-pc.webp'); background-size:cover; background-position:center;">
         </div>
@@ -337,7 +338,6 @@ footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:r
         </div>
       </a>
 
-      <!-- Starray EM-i -->
       <a href="starray.html" class="mcard fi fi-d3" style="text-decoration: none; color: inherit;">
         <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-Staray-pc.webp'); background-size:cover; background-position:center;">
         </div>
@@ -350,6 +350,13 @@ footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:r
       </a>
 
     </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+        <a href="models.html" class="btn-link" style="color: var(--black); font-weight: 600; border-bottom: 1px solid var(--black); padding-bottom: 4px; text-decoration: none;">
+            Lihat Semua Model Mobil
+        </a>
+    </div>
+
   </div>
 </section>
 
@@ -727,6 +734,93 @@ footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:r
 </footer>
 
 <script>
+const SUPABASE_URL = 'https://gzgrqnxngelctwdmegva.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6Z3JxbnhuZ2VsY3R3ZG1lZ3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0OTkwNzcsImV4cCI6MjA5NzA3NTA3N30.X71JgALxRkoWcCqE8TnRd4RZr9d5M2lrrzX3ICbSFmg';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadGallery() {
+    const slider = document.querySelector('.gallery-slider');
+    slider.innerHTML = '';
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('testimonials')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        data.forEach((testi, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'gallery-slide';
+            slide.style = "min-width: 50%; display: flex; justify-content: center; padding: 0 8px;";
+            slide.innerHTML = `
+                <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+                    <img src="${testi.photo_url}" alt="Testimoni ${index + 1}" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+                </div>
+            `;
+            slider.appendChild(slide);
+        });
+
+        initSlider();
+
+    } catch (err) {
+        console.error("Gagal memuat testimoni:", err);
+    }
+}
+
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+const dotsContainer = document.querySelector('.slider-dots');
+
+let currentSlide = 0;
+let slidesPerView = window.innerWidth > 640 ? 2 : 1;
+let totalSlides = 0;
+let visibleSlides = slidesPerView;
+
+function initSlider() {
+    const gallerySlider = document.querySelector('.gallery-slider');
+    const slides = document.querySelectorAll('.gallery-slide'); 
+    totalSlides = slides.length;
+    
+    updateDots(); 
+    updateSlider(); 
+}
+
+function updateSlider() {
+    const gallerySlider = document.querySelector('.gallery-slider');
+    const slideWidth = window.innerWidth > 640 ? 50 : 100;
+    gallerySlider.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+    
+    const currentPage = Math.floor(currentSlide / slidesPerView);
+    const dots = document.querySelectorAll('.slider-dots div');
+    dots.forEach((dot, index) => {
+        dot.style.background = index === currentPage ? 'var(--black)' : 'var(--g400)';
+    });
+}
+
+function updateDots() {
+    const dotsContainer = document.querySelector('.slider-dots');
+    dotsContainer.innerHTML = '';
+    const numPages = Math.ceil(totalSlides / slidesPerView);
+    for (let i = 0; i < numPages; i++) {
+        const dot = document.createElement('div');
+        dot.style.width = '12px'; dot.style.height = '12px'; dot.style.borderRadius = '50%';
+        dot.style.background = i === 0 ? 'var(--black)' : 'var(--g400)';
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => goToPage(i));
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function nextSlide() { if(totalSlides > 0) { currentSlide = (currentSlide + slidesPerView) % totalSlides; updateSlider(); }}
+function prevSlide() { if(totalSlides > 0) { currentSlide = (currentSlide - slidesPerView + totalSlides) % totalSlides; updateSlider(); }}
+function goToPage(pageIndex) { currentSlide = pageIndex * slidesPerView; updateSlider(); 
+
+}
+
+loadGallery();
+
 // Navbar scroll
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{
@@ -775,72 +869,6 @@ zoomableImage.addEventListener('click', () => {
 zoomModal.addEventListener('click', () => {
   zoomModal.style.display = 'none';
 });
-
-// Gallery Slider
-const gallerySlider = document.querySelector('.gallery-slider');
-const slides = document.querySelectorAll('.gallery-slide');
-const prevBtn = document.querySelector('.prev-btn');
-const nextBtn = document.querySelector('.next-btn');
-const dotsContainer = document.querySelector('.slider-dots');
-
-let currentSlide = 0;
-let slidesPerView = window.innerWidth > 640 ? 2 : 1;
-let totalSlides = slides.length;
-let visibleSlides = slidesPerView;
-
-// Function to update slides per view on resize
-function updateSlidesPerView() {
-  slidesPerView = window.innerWidth > 640 ? 2 : 1;
-  visibleSlides = slidesPerView;
-  // Recalculate total "pages"
-  updateDots();
-  updateSlider();
-}
-
-// Create dots based on pages
-function updateDots() {
-  dotsContainer.innerHTML = '';
-  const numPages = Math.ceil(totalSlides / slidesPerView);
-  for (let i = 0; i < numPages; i++) {
-    const dot = document.createElement('div');
-    dot.style.width = '12px';
-    dot.style.height = '12px';
-    dot.style.borderRadius = '50%';
-    dot.style.background = i === 0 ? 'var(--black)' : 'var(--g400)';
-    dot.style.cursor = 'pointer';
-    dot.style.transition = 'background 0.3s';
-    dot.addEventListener('click', () => goToPage(i));
-    dotsContainer.appendChild(dot);
-  }
-}
-
-updateDots();
-
-const dots = () => document.querySelectorAll('.slider-dots div');
-
-function updateSlider() {
-  const slideWidth = window.innerWidth > 640 ? 50 : 100;
-  gallerySlider.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
-  const currentPage = Math.floor(currentSlide / slidesPerView);
-  dots().forEach((dot, index) => {
-    dot.style.background = index === currentPage ? 'var(--black)' : 'var(--g400)';
-  });
-}
-
-function nextSlide() {
-  currentSlide = (currentSlide + slidesPerView) % totalSlides;
-  updateSlider();
-}
-
-function prevSlide() {
-  currentSlide = (currentSlide - slidesPerView + totalSlides) % totalSlides;
-  updateSlider();
-}
-
-function goToPage(pageIndex) {
-  currentSlide = pageIndex * slidesPerView;
-  updateSlider();
-}
 
 prevBtn.addEventListener('click', prevSlide);
 nextBtn.addEventListener('click', nextSlide);
