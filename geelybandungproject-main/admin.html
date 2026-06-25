@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Geely Bandung</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+    <div id="login-section" class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Geely Admin</h2>
+                <p>Dashboard Management System</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email Admin</label>
+                    <input type="email" id="email" required placeholder="admin@geely.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="btn-login" class="btn btn-primary btn-block">Masuk Dashboard</button>
+                <p id="login-error" class="error-msg" style="display: none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="dashboard-wrapper" style="display: none;">
+        <header class="top-nav">
+            <div class="nav-brand"><h2>Geely Panel</h2></div>
+            <button id="btn-logout" class="btn btn-outline-danger">Keluar / Logout</button>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="tab-menu">
+                <button class="tab-btn active" onclick="showTab('mobil')">Model Mobil</button>
+                <button class="tab-btn" onclick="showTab('testimoni')">Testimoni</button>
+            </div>
+
+            <div id="tab-mobil" class="card tab-content active">
+                <div class="card-header">
+                    <h3>Data Model Mobil</h3>
+                    <button class="btn btn-primary" id="btn-tambah-mobil">+ Tambah Mobil</button>
+                </div>
+                
+                <div class="table-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid var(--gray);">
+                    <input type="text" id="search-car" placeholder="Cari nama atau tipe mobil..." style="width: 100%; max-width: 300px; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--gray); background: var(--black); color: var(--light); font-family: inherit;">
+                    <div class="pagination" style="display: flex; align-items: center; gap: 15px;">
+                        <button id="btn-prev-car" class="btn btn-outline-danger" style="padding: 6px 12px; font-size: 12px;" disabled>&laquo; Prev</button>
+                        <span id="page-info-car" style="font-size: 13px; color: var(--accent);">Hal 1 dari 1</span>
+                        <button id="btn-next-car" class="btn btn-outline-danger" style="padding: 6px 12px; font-size: 12px;" disabled>Next &raquo;</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Foto</th><th>Nama Mobil</th><th>Kategori Tipe</th><th>Harga</th><th style="text-align: right;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-mobil"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-testimoni" class="card tab-content" style="display: none;">
+                <div class="card-header">
+                    <h3>Data Testimoni</h3>
+                    <button class="btn btn-primary" id="btn-tambah-testimoni">+ Tambah Testimoni</button>
+                </div>
+
+                <div class="table-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid var(--gray);">
+                    <input type="text" id="search-testimoni" placeholder="Cari tanggal (misal: 15 Juni)..." style="width: 100%; max-width: 300px; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--gray); background: var(--black); color: var(--light); font-family: inherit;">
+                    <div class="pagination" style="display: flex; align-items: center; gap: 15px;">
+                        <button id="btn-prev-testimoni" class="btn btn-outline-danger" style="padding: 6px 12px; font-size: 12px;" disabled>&laquo; Prev</button>
+                        <span id="page-info-testimoni" style="font-size: 13px; color: var(--accent);">Hal 1 dari 1</span>
+                        <button id="btn-next-testimoni" class="btn btn-outline-danger" style="padding: 6px 12px; font-size: 12px;" disabled>Next &raquo;</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Foto Testimoni</th><th>Tanggal Upload</th><th style="text-align: right;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-testimoni"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="car-modal" class="modal" style="display: none;">
+        <div class="modal-content card">
+            <div class="card-header">
+                <h3 id="modal-car-title">Tambah Model Mobil</h3>
+                <span class="close-modal" id="close-car-modal">&times;</span>
+            </div>
+            <form id="car-form" style="padding: 20px;">
+                <input type="hidden" id="car-id">
+                <div class="form-group"><label>Nama Mobil</label><input type="text" id="car-name" required></div>
+                <div class="form-group"><label>Kategori / Tipe</label><input type="text" id="car-type" required></div>
+                <div class="form-group"><label>Harga</label><input type="text" id="car-price" required></div>
+                <div class="form-group"><label>Deskripsi Singkat</label><input type="text" id="car-desc" required></div>
+                <div class="form-group">
+                    <label>Foto Mobil</label><input type="file" id="car-image" accept="image/*">
+                    <small style="color: var(--accent); display: block;" id="current-image-info"></small>
+                </div>
+                <button type="submit" id="btn-save-car" class="btn btn-primary btn-block" style="margin-top: 15px;">Simpan Data Mobil</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="testimoni-modal" class="modal" style="display: none;">
+        <div class="modal-content card">
+            <div class="card-header">
+                <h3>Tambah Foto Testimoni</h3>
+                <span class="close-modal" id="close-testimoni-modal">&times;</span>
+            </div>
+            <form id="testimoni-form" style="padding: 20px;">
+                <div class="form-group">
+                    <label>Upload Foto Serah Terima</label>
+                    <input type="file" id="testimoni-image" accept="image/*" required>
+                </div>
+                <button type="submit" id="btn-save-testimoni" class="btn btn-primary btn-block" style="margin-top: 15px;">Upload Testimoni</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

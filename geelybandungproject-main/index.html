@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geely Bandung | Dealer Resmi Mobil Geely</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#050505;
+  --white:#ffffff;
+  --off-white:#f5f5f5;
+  --g900:#111111;
+  --g800:#1a1a1a;
+  --g700:#2a2a2a;
+  --g600:#3d3d3d;
+  --g400:#7a7a7a;
+  --g300:#a8a8a8;
+  --g200:#d4d4d4;
+  --g100:#f0f0f0;
+  --display:'Space Grotesk',sans-serif;
+  --serif:'Playfair Display',serif;
+  --body:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--black);font-family:var(--body);overflow-x:hidden;line-height:1.8}
+
+    @keyframes popUpWA { 
+        from { opacity: 0; transform: translateY(30px) scale(0.9); } 
+        to { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+    
+    #wa-fab:hover { transform: scale(1.08) translateY(-5px); }
+    #close-wa-widget:hover { color: #ffffff !important; }
+    #wa-customer-name:focus, #wa-customer-msg:focus { border-color: #25D366 !important; background: #ffffff !important; }
+    #send-wa-widget:hover { background: #20BA5A !important; }
+
+    @media(max-width: 640px) {
+        #wa-fab { bottom: 20px; right: 20px; width: 55px; height: 55px; }
+        #wa-widget { bottom: 85px; right: 20px; width: calc(100% - 40px); }
+    }
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s,border-color .4s; background:var(--black);}
+.navbar.scrolled{background:rgba(5,5,5,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:24px 64px;max-width:1500px;margin:0 auto}
+.logo{font-family:var(--display);font-size:.95rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:var(--white)}
+.logo span{color:var(--g300);font-weight:300}
+.nav-links{display:flex;gap:48px;align-items:center}
+.nav-links a{font-family:var(--display);font-size:.75rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.7);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{font-family:var(--display);font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--black);background:var(--white);padding:12px 28px;text-decoration:none;transition:background .2s,transform .2s;border-radius:2px}
+.nav-cta:hover{background:var(--g200);transform:translateY(-2px)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:1px;background:var(--white);transition:all .3s}
+
+/* ── MOBILE NAV ── */
+.mob-nav{display:none;position:fixed;inset:0;z-index:200;background:var(--black);flex-direction:column;align-items:center;justify-content:center;gap:40px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:var(--display);font-size:2.2rem;font-weight:700;letter-spacing:-.02em;color:var(--white);text-decoration:none}
+.mob-close{position:absolute;top:24px;right:40px;background:none;border:none;color:var(--g300);font-size:1.4rem;cursor:pointer}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background-image: url('assets/foto.png'); background-size: cover; background-position: center; color:var(--white);}
+.hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:1;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 65% 50%,rgba(255,255,255,.04) 0%,transparent 70%);z-index:2;}
+.hero-line{position:absolute;right:0;top:50%;transform:translateY(-50%);width:38vw;height:1px;background:linear-gradient(to left,transparent,rgba(255,255,255,.12));z-index:2;}
+.hero-wrap{max-width:1500px;margin:0 auto;padding:0 64px;width:100%;position:relative;z-index:3;text-align:center;}
+.hero-eyebrow{font-family:var(--display);font-size:.68rem;letter-spacing:.36em;text-transform:uppercase;color:var(--g300);margin-bottom:32px;display:flex;align-items:center;justify-content:center;gap:16px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--g400);}
+.hero-h1{font-family:var(--display);font-size:clamp(3rem,10vw,10rem);font-weight:700;line-height:.9;letter-spacing:-.04em;margin-bottom:8px;}
+.hero-h1 .stroke{-webkit-text-stroke:2px var(--white);color:transparent;}
+.hero-sub{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,2.5vw,1.75rem);color:rgba(255,255,255,0.9);margin:32px auto 48px;max-width:600px;line-height:1.7;}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;}
+.btn-wh{font-family:var(--display);font-size:.75rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--white);padding:18px 44px;text-decoration:none;display:inline-block;transition:background .2s,transform .2s;border-radius:2px;}
+.btn-wh:hover{background:var(--g200);transform:translateY(-3px);}
+.btn-link{font-family:var(--display);font-size:.75rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:color .2s;}
+.btn-link::after{content:'→';transition:transform .2s;font-size:1rem;}
+.btn-link:hover{color:var(--white);}
+.btn-link:hover::after{transform:translateX(4px);}
+.scroll-hint{position:absolute;bottom:56px;left:64px;display:flex;align-items:flex-end;gap:12px;z-index:3;}
+.scroll-bar{width:1px;height:64px;background:linear-gradient(to bottom,var(--g400),transparent);animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.scroll-txt{font-family:var(--display);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--g300);writing-mode:vertical-rl;}
+
+/* ── SECTIONS ── */
+.section{padding:140px 0}
+.wrap{max-width:1500px;margin:0 auto;padding:0 64px}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:72px;padding-bottom:32px;border-bottom:1px solid rgba(0,0,0,0.08)}
+.sec-header-dark{border-bottom-color:rgba(255,255,255,0.1)}
+.sec-eye{font-family:var(--display);font-size:.7rem;letter-spacing:.36em;text-transform:uppercase;color:var(--g400);margin-bottom:12px}
+.sec-eye-dark{color:rgba(255,255,255,0.5)}
+.sec-h2{font-family:var(--display);font-size:clamp(2.2rem,4.2vw,3.6rem);font-weight:700;letter-spacing:-.025em;line-height:1}
+.sec-h2-dark{color:var(--white)}
+.sec-count{font-family:var(--display);font-size:5.5rem;font-weight:300;color:rgba(0,0,0,0.08);line-height:1;margin-bottom:-12px}
+.sec-count-dark{color:rgba(255,255,255,0.08)}
+
+/* ── LIGHT SECTION STYLE ── */
+.section-light{background:var(--off-white);color:var(--black)}
+.section-dark{background:var(--black);color:var(--white)}
+
+/* ── MODEL CARDS ── */
+.models-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.mcard{position:relative;overflow:hidden;background:var(--white);cursor:pointer;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.06);transition:transform .5s cubic-bezier(.25,.46,.45,.94),box-shadow .5s}
+.mcard:hover{transform:translateY(-10px);box-shadow:0 20px 60px rgba(0,0,0,0.12)}
+.mcard-img{width:100%;aspect-ratio:16/10;position:relative;overflow:hidden;transition:transform .7s cubic-bezier(.25,.46,.45,.94); background-color:#111; background-repeat:no-repeat; border-top-left-radius:8px; border-top-right-radius:8px;}
+.mcard:hover .mcard-img{transform:scale(1.08)}
+.mcard-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;}
+
+.mcard-body{position:relative;padding:32px 32px 36px;background:var(--white);color:var(--black);}
+.mcard-tag{font-family:var(--display);font-size:.65rem;letter-spacing:.26em;text-transform:uppercase;color:var(--g400);margin-bottom:10px}
+.mcard-name{font-family:var(--display);font-size:1.8rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px;line-height:1.1;color:var(--black)}
+.mcard-desc{font-size:.95rem;color:var(--g600);margin-bottom:24px;line-height:1.6}
+.mcard-price{font-family:var(--display);font-size:.9rem;font-weight:700;letter-spacing:.08em;color:var(--black);padding-top:20px;border-top:1px solid var(--g100)}
+
+.gallery-item:hover img{transform:scale(1.08)}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.about-left .label{font-family:var(--display);font-size:.7rem;letter-spacing:.36em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:20px}
+.about-left h2{font-family:var(--display);font-size:clamp(2rem,3.4vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:24px;color:var(--white)}
+.about-left p{color:rgba(255,255,255,0.7);line-height:1.85;font-size:1rem;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:40px 48px}
+.stat{border-top:1px solid rgba(255,255,255,0.12);padding-top:24px}
+.stat-num{font-family:var(--display);font-size:3rem;font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:8px;color:var(--white)}
+.stat-label{font-size:.85rem;color:rgba(255,255,255,0.5);letter-spacing:.06em}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px}
+.c-head h3{font-family:var(--display);font-size:1rem;font-weight:600;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--g200)}
+.c-block{margin-bottom:32px}
+.c-label{font-family:var(--display);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--g400);margin-bottom:8px}
+.c-val{font-size:1rem;color:var(--g700);line-height:1.7}
+.cform{display:flex;flex-direction:column}
+.fg{border-bottom:1px solid var(--g300);margin-bottom:8px;transition:border-color .2s}
+.fg:focus-within{border-bottom-color:var(--black)}
+.fg input,.fg select,.fg textarea{width:100%;background:transparent;border:none;outline:none;color:var(--black);font-family:var(--body);font-size:1rem;padding:18px 0;display:block}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--g400)}
+.fg select{color:var(--g400);cursor:pointer;-webkit-appearance:none;appearance:none}
+.fg select option{background:var(--white);color:var(--black)}
+.fg textarea{resize:none;height:120px;padding-top:24px}
+.btn-send{margin-top:48px;font-family:var(--display);font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--white);background:var(--black);border:none;padding:20px 52px;cursor:pointer;align-self:flex-start;transition:background .2s,transform .2s;border-radius:2px}
+.btn-send:hover{background:var(--g700);transform:translateY(-2px)}
+.btn-send.sent{background:var(--g600);color:var(--white)}
+
+/* ── FOOTER ── */
+footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.08);padding:48px 64px}
+.foot-inner{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+footer p{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;color:rgba(255,255,255,0.5)}
+.foot-links{display:flex;gap:32px}
+.foot-links a{font-family:var(--display);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,0.5);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--white)}
+.foot-dev{margin-top:20px;text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06)}
+.foot-dev a{font-family:var(--display);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.3);text-decoration:none;transition:color .2s}
+.foot-dev a:hover{color:rgba(255,255,255,0.6)}
+
+/* ── FAQ ── */
+.faq-list{display:flex;flex-direction:column;gap:0;max-width:860px;margin:0 auto}
+.faq-item{border-bottom:1px solid rgba(0,0,0,0.1)}
+.faq-q{width:100%;background:none;border:none;text-align:left;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:24px;cursor:pointer;font-family:var(--display);font-size:1rem;font-weight:600;color:var(--black);letter-spacing:-.01em;line-height:1.4;transition:color .2s}
+.faq-q:hover{color:var(--g600)}
+.faq-icon{flex-shrink:0;width:28px;height:28px;border:1px solid var(--g200);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--g400);transition:transform .35s cubic-bezier(.25,.46,.45,.94),background .2s,color .2s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--black);color:var(--white);border-color:var(--black)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.25,.46,.45,.94)}
+.faq-a-inner{padding:0 0 28px;font-size:.95rem;color:var(--g600);line-height:1.85}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
+.fi.show{opacity:1;transform:translateY(0)}
+.fi-d1{transition-delay:.12s}.fi-d2{transition-delay:.24s}.fi-d3{transition-delay:.36s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .nav-inner{padding:20px 40px}
+  .hero-wrap,.wrap{padding:0 40px}
+  .hero-wrap{text-align:left}
+  .hero-eyebrow{justify-content:flex-start}
+  .hero-actions{justify-content:flex-start}
+  .models-grid{grid-template-columns:1fr 1fr;gap:24px}
+  .mcard:last-child{grid-column:1/-1}
+  .mcard:last-child .mcard-img{aspect-ratio:16/10}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:64px}
+  .scroll-hint{left:40px}
+  .section-dark .wrap div[style*="grid-template-columns: repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media(max-width:640px){
+  .nav-inner{padding:18px 24px}
+  .hero-wrap,.wrap{padding:0 24px}
+  .hero{min-height: auto; display: block;}
+  .hero::before{
+    content: '';
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: 
+      linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+      url('assets/foto.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2;
+  }
+  .hero-wrap{text-align:center; padding-top: 24px; padding-bottom: 40px; background: var(--black);}
+  .hero-eyebrow{justify-content:center; margin-bottom: 20px; font-size: 0.55rem;}
+  .hero-h1{font-size: 2.2rem; line-height: 1.1; margin-bottom: 16px;}
+  .hero-sub{font-size: 0.95rem; margin-bottom: 28px;}
+  .hero-actions{justify-content:center; flex-wrap: wrap; gap: 14px;}
+  .section{padding:96px 0}
+  .models-grid{grid-template-columns:1fr}
+  .mcard:last-child{grid-column:auto}
+  .sec-header{flex-direction:column;align-items:flex-start;gap:16px}
+  .scroll-hint{display:none}
+  footer,.foot-inner{padding:36px 24px}
+  .foot-inner{flex-direction:column;gap:24px;text-align:center}
+  .foot-dev{margin-top:16px;padding-top:16px}
+  .stats{grid-template-columns:1fr;gap:32px}
+  .mcard-img{aspect-ratio:16/10}
+  .section-dark .wrap div[style*="grid-template-columns: repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+  .gallery-slide{min-width: 100% !important; padding: 0 !important;}
+  .gallery-item{aspect-ratio: 1080/1350 !important;}
+  .gallery-item img{object-fit: cover !important; width: 100% !important; height: 100% !important;}
+  #sales .fi > div:first-child{grid-template-columns: 1fr !important; gap: 20px !important;}
+  #gallery .wrap{padding: 0 !important;}
+  
+  /* Gallery Mobile */
+  .gallery-slide {
+    padding: 0 30px !important;
+  }
+  .gallery-slide .gallery-item {
+    flex: 0 0 100% !important;
+  }
+  .slider-btn {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 20px !important;
+  }
+}
+
+/* Gallery hover effect */
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Download button hover */
+.btn-secondary:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+/* Slider button hover */
+.slider-btn:hover {
+  background: var(--g700);
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar" id="nav">
+  <div class="nav-inner">
+    <a href="#home" class="logo"><img src="assets/logo-geely-header-white-transparent.webp" alt="Geely Logo" style="height: 32px; width: auto;"></a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#models">Models</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Test Drive</a>
+    <button class="hamburger" id="ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mob-nav" id="mob">
+  <button class="mob-close" id="mob-x">✕</button>
+  <a href="#home" class="mob-lnk">Home</a>
+  <a href="#models" class="mob-lnk">Models</a>
+  <a href="#about" class="mob-lnk">About</a>
+  <a href="#faq" class="mob-lnk">FAQ</a>
+  <a href="#contact" class="mob-lnk">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-wrap">
+    <p class="hero-eyebrow">Dealer Resmi Geely · Bandung</p>
+    <h1 class="hero-h1">
+      The New<br>
+      <span class="stroke">Standard</span><br>
+      of Luxury.
+    </h1>
+    <p class="hero-sub">Rasakan kenyamanan dan teknologi masa depan bersama Geely Bandung.</p>
+    <div class="hero-actions">
+      <a href="#models" class="btn-wh">Lihat Koleksi</a>
+      <a href="#contact" class="btn-link">Jadwalkan Test Drive</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-bar"></div>
+    <span class="scroll-txt">Scroll</span>
+  </div>
+</section>
+
+<!-- MODELS (LIGHT BACKGROUND) -->
+<section id="models" class="section section-light">
+  <div class="wrap">
+    <div class="sec-header fi">
+      <div>
+        <p class="sec-eye">Lineup Kendaraan</p>
+        <h2 class="sec-h2">Model Unggulan</h2>
+      </div>
+      <span class="sec-count">03</span>
+    </div>
+    
+    <p style="text-align: center; margin-bottom: 32px; color: var(--g600); font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px;">
+      Klik foto jika ingin melihat lebih lanjut!
+    </p>
+    
+    <div class="models-grid">
+
+      <a href="ex-5.html" class="mcard fi fi-d1" style="text-decoration: none; color: inherit;">
+        <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-EX-5-pc.webp'); background-size:cover; background-position:center;">
+        </div>
+        <div class="mcard-body">
+          <p class="mcard-tag">SUV · Premium</p>
+          <h3 class="mcard-name">EX5</h3>
+          <p class="mcard-desc">Keseimbangan sempurna antara performa dan keanggunan dalam satu SUV yang memukau.</p>
+          <p class="mcard-price">Mulai Rp 478.000.000</p>
+        </div>
+      </a>
+
+      <a href="ex-2.html" class="mcard fi fi-d2" style="text-decoration: none; color: inherit;">
+        <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-EX-2-pc.webp'); background-size:cover; background-position:center;">
+        </div>
+        <div class="mcard-body">
+          <p class="mcard-tag">MPV · Family</p>
+          <h3 class="mcard-name">EX 2</h3>
+          <p class="mcard-desc">Keluarga yang sempurna dengan teknologi keamanan canggih untuk kenyamanan bersama.</p>
+          <p class="mcard-price">Mulai Rp 242.900.000</p>
+        </div>
+      </a>
+
+      <a href="starray.html" class="mcard fi fi-d3" style="text-decoration: none; color: inherit;">
+        <div class="mcard-img" style="background-image:url('assets/geely-bandung-models-Staray-pc.webp'); background-size:cover; background-position:center;">
+        </div>
+        <div class="mcard-body">
+          <p class="mcard-tag">Sedan · Hybrid</p>
+          <h3 class="mcard-name">Starray EM-i</h3>
+          <p class="mcard-desc">Kompak dan lincah untuk kehidupan kota modern dengan teknologi hybrid efisien.</p>
+          <p class="mcard-price">Mulai Rp 502.000.000</p>
+        </div>
+      </a>
+
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+        <a href="models.html" class="btn-link" style="color: var(--black); font-weight: 600; border-bottom: 1px solid var(--black); padding-bottom: 4px; text-decoration: none;">
+            Lihat Semua Model Mobil
+        </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- BROCHURE & PRICELIST -->
+<section class="section section-dark">
+  <div class="wrap">
+    <div class="sec-header fi sec-header-dark">
+      <div>
+        <p class="sec-eye sec-eye-dark">Pricelist & Paket</p>
+        <h2 class="sec-h2 sec-h2-dark">Lihat Detail Penawaran Terbaru</h2>
+      </div>
+    </div>
+    <div class="fi" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; align-items: center;">
+      <div class="zoomable-image" style="aspect-ratio: 9/16; overflow: hidden; border-radius: 8px; cursor: pointer;">
+        <img src="assets/brosur.jpeg" alt="Brosur Geely" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+      </div>
+      <div>
+        <h3 style="font-family: var(--display); font-size: 1.8rem; font-weight: 700; color: var(--white); margin-bottom: 16px;">Paket GEELY April</h3>
+        <p style="color: rgba(255,255,255,.7); font-size: 1rem; line-height: 1.8; margin-bottom: 32px;">
+          Dapatkan penawaran spesial dan paket menarik untuk kendaraan Geely pilihan Anda. Lihat brosur lengkap untuk informasi detail tentang harga, paket, dan penawaran terbaru.
+        </p>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="assets/Paket GEELY April.pdf" target="_blank" class="btn-wh" style="text-decoration: none;">Lihat PDF</a>
+          <a href="assets/Paket GEELY April.pdf" download class="btn-secondary" style="font-family: var(--display); font-size: .75rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.3); padding: 18px 48px; text-decoration: none; transition: all .2s; border-radius: 2px; display: inline-block;">Unduh PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Zoom Modal -->
+<div id="zoomModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.9); z-index: 1000; justify-content: center; align-items: center; cursor: pointer;">
+  <img id="zoomImage" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px;">
+</div>
+
+<!-- ABOUT (DARK BACKGROUND) -->
+<section id="about" class="section section-dark">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-left fi">
+        <p class="label">Tentang Kami</p>
+        <h2>Dealer Terpercaya di Jantung Bandung</h2>
+        <p>Geely Bandung hadir sebagai dealer resmi yang menyediakan layanan terbaik mulai dari pembelian, perawatan, hingga layanan purna jual.</p>
+        <p>Dengan tim profesional dan showroom modern, kami berkomitmen memberikan pengalaman membeli mobil yang menyenangkan dan terpercaya.</p>
+      </div>
+      <div class="stats fi fi-d2">
+        <div class="stat">
+          <p class="stat-num">500+</p>
+          <p class="stat-label">Unit Terjual</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">5★</p>
+          <p class="stat-label">Rating Pelanggan</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">24/7</p>
+          <p class="stat-label">Layanan Darurat</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">10+</p>
+          <p class="stat-label">Tahun Pengalaman</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SALES TEAM (LIGHT BACKGROUND) -->
+<section id="sales" class="section section-light">
+  <div class="wrap">
+    <div class="sec-header fi">
+      <div>
+        <p class="sec-eye">Sales Team</p>
+        <h2 class="sec-h2">Sales Geely Bandung</h2>
+      </div>
+    </div>
+    <div class="fi" style="max-width: 900px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-bottom: 32px;">
+        <div class="gallery-item" style="aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+          <img src="assets/foto2.jpeg" alt="Sri Mulyani - Foto Formal" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+        </div>
+        <div class="gallery-item" style="aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+          <img src="assets/foto1.jpeg" alt="Sri Mulyani - Foto Gaya" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+        </div>
+      </div>
+      <div style="text-align: center; background: var(--black); color: var(--white); padding: 48px 32px; border-radius: 8px;">
+        <h3 style="font-family: var(--display); font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;">Sri Mulyani</h3>
+        <p style="color: var(--g300); font-size: 1rem; line-height: 1.8; margin-bottom: 32px;">
+          Hubungi team Geely Bandung melalui nomor yang tertera pada website ini dan wujudkan impian Anda memiliki mobil Geely yang ramah lingkungan dan hemat biaya.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+          <a href="https://wa.me/6285722667209" target="_blank" class="btn-wh" style="padding: 14px 32px;">WhatsApp</a>
+          <a href="https://instagram.com/geely.srimulyani" target="_blank" class="btn-secondary" style="font-family: var(--display); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); border: 1px solid rgba(255,255,255,0.3); padding: 14px 32px; text-decoration: none; transition: all 0.2s; border-radius: 2px; display: inline-block;">Instagram</a>
+          <a href="https://tiktok.com/@geelybandungjabar" target="_blank" class="btn-secondary" style="font-family: var(--display); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); border: 1px solid rgba(255,255,255,0.3); padding: 14px 32px; text-decoration: none; transition: all 0.2s; border-radius: 2px; display: inline-block;">TikTok</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT (LIGHT BACKGROUND) -->
+<section id="contact" class="section section-light">
+  <div class="wrap">
+    <div class="sec-header fi" style="margin-bottom:72px">
+      <div>
+        <p class="sec-eye">Hubungi Kami</p>
+        <h2 class="sec-h2">Jadwalkan Test Drive</h2>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <div class="c-info fi">
+        <div class="c-head"><h3>Informasi Showroom</h3></div>
+        <div class="c-block">
+          <p class="c-label">Showroom</p>
+          <p class="c-val">Jl. Soekarno-Hatta No. 178, Babakan Ciparay, Kota Bandung, Jawa Barat 40222</p>
+        </div>
+        <div class="c-block">
+          <p class="c-label">Telepon</p>
+          <p class="c-val">+62-857-2266-7209</p>
+        </div>
+        <div class="c-block">
+          <p class="c-label">Operational Hours</p>
+          <p class="c-val">Showroom (Senin – Minggu)   08:30 – 18:00<br>Service (Senin – Minggu)   08:30 – 16:00</p>
+        </div>
+        <div class="c-block" style="margin-top: 24px;">
+          <p class="c-label">Lokasi</p>
+          <div style="border-radius: 8px; overflow: hidden;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.8946052369946!2d107.57626427495596!3d-6.914649693085576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e68d7a6b7c7d:0x559f1f43c0620f0c!2sJl. Soekarno Hatta No.178, Babakan Ciparay, Kec. Babakan Ciparay, Kota Bandung, Jawa Barat 40222!5e0!3m2!1sen!2sid!4v1718129572779!5m2!1sen!2sid" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+      <form id="cform" class="cform fi fi-d2">
+        <div class="fg"><input type="text" placeholder="Nama Lengkap" required></div>
+        <div class="fg"><input type="email" placeholder="Alamat Email" required></div>
+        <div class="fg">
+          <select>
+            <option value="" disabled selected>Pilih Model Kendaraan</option>
+            <option>EX5</option>
+            <option>Starray EM-i</option>
+            <option>EX 2</option>
+          </select>
+        </div>
+        <div class="fg"><textarea placeholder="Pesan atau pertanyaan Anda..."></textarea></div>
+        <button type="submit" class="btn-send" id="sbtn">Kirim Pesan</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="section section-light">
+  <div class="wrap" style="padding: 0 40px !important;">
+    <div class="sec-header fi">
+      <div>
+        <p class="sec-eye">Galeri Pelanggan</p>
+        <h2 class="sec-h2">Pengalaman Nyata Bersama Geely</h2>
+      </div>
+    </div>
+    <div class="fi gallery-slider-container" style="position: relative; overflow: hidden;">
+      <div class="gallery-slider" style="display: flex; transition: transform 0.5s ease-in-out;">
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/gallery1.jpeg" alt="Galeri 1" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/gallery 2.jpeg" alt="Galeri 2" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.50 (1).jpeg" alt="Galeri 3" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.50 (2).jpeg" alt="Galeri 4" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.51 (1).jpeg" alt="Galeri 5" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.51 (2).jpeg" alt="Galeri 6" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.51.jpeg" alt="Galeri 7" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.52 (1).jpeg" alt="Galeri 8" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.52.jpeg" alt="Galeri 9" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.53 (2).jpeg" alt="Galeri 10" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.54 (1).jpeg" alt="Galeri 11" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.54 (2).jpeg" alt="Galeri 12" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.54.jpeg" alt="Galeri 13" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.55 (1).jpeg" alt="Galeri 14" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+        <div class="gallery-slide" style="min-width: 50%; display: flex; justify-content: center; padding: 0 8px;">
+          <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+            <img src="assets/WhatsApp Image 2026-06-11 at 13.41.55.jpeg" alt="Galeri 15" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+          </div>
+        </div>
+      </div>
+      <button class="slider-btn prev-btn" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); background: var(--black); color: var(--white); border: none; width: 48px; height: 48px; border-radius: 0 8px 8px 0; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.3s;">‹</button>
+      <button class="slider-btn next-btn" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); background: var(--black); color: var(--white); border: none; width: 48px; height: 48px; border-radius: 8px 0 0 8px; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.3s;">›</button>
+      <div class="slider-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 24px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="section section-light">
+  <div class="wrap">
+    <div class="sec-header fi">
+      <div>
+        <p class="sec-eye">FAQ</p>
+        <h2 class="sec-h2">Pertanyaan yang Sering Diajukan</h2>
+      </div>
+    </div>
+    <div class="faq-list fi">
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apakah Geely Bandung adalah dealer resmi Geely Indonesia?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Ya, Geely Bandung adalah dealer resmi yang beroperasi di bawah naungan Geely Indonesia. Kami menyediakan kendaraan baru bergaransi resmi, suku cadang asli, serta layanan purna jual bersertifikat langsung dari prinsipal.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apa saja model Geely yang tersedia di showroom Bandung?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Saat ini kami menyediakan tiga model unggulan: <strong>Geely EX5</strong> (SUV Premium), <strong>Geely EX 2</strong> (MPV Family), dan <strong>Geely Starray EM-i</strong> (Sedan Hybrid). Stok tersedia untuk test drive dan pembelian langsung.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Bagaimana cara melakukan test drive?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Anda bisa menjadwalkan test drive melalui formulir di halaman ini, menghubungi kami via WhatsApp di +62-857-2266-7209, atau datang langsung ke showroom kami di Jl. Soekarno-Hatta No. 178, Bandung. Test drive tersedia setiap hari Senin–Minggu pukul 08.30–18.00.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apakah tersedia pembelian secara kredit atau cicilan?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Tentu. Kami bekerja sama dengan berbagai lembaga pembiayaan terpercaya. Tenor cicilan mulai dari 12 hingga 60 bulan dengan uang muka yang kompetitif. Tim sales kami siap membantu Anda mendapatkan simulasi kredit yang sesuai dengan kemampuan finansial Anda.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Berapa lama garansi resmi kendaraan Geely?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Geely memberikan garansi kendaraan selama <strong>5 tahun atau 150.000 km</strong> (mana yang lebih dahulu tercapai). Untuk komponen baterai pada model hybrid/EV, garansi baterai berlaku lebih panjang sesuai ketentuan prinsipal.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Bagaimana dengan ketersediaan suku cadang dan bengkel servis?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Suku cadang asli tersedia di bengkel resmi kami yang beroperasi Senin–Minggu pukul 08.30–16.00. Selain itu, Geely Indonesia memiliki jaringan bengkel resmi di seluruh kota besar Indonesia, sehingga perawatan kendaraan Anda tetap terjamin di mana pun Anda berada.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apakah Geely Starray EM-i benar-benar hemat bahan bakar?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Ya. Starray EM-i menggunakan teknologi hybrid plug-in yang memungkinkan konsumsi BBM sangat efisien. Dalam kondisi perkotaan, kendaraan dapat berjalan dominan pada mode listrik sehingga biaya operasional jauh lebih rendah dibanding kendaraan konvensional.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apakah ada program tukar tambah (trade-in)?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Ada. Kami menerima tukar tambah kendaraan lama Anda dengan kendaraan Geely baru. Proses appraisal dilakukan langsung di showroom secara transparan. Hubungi tim sales kami untuk informasi estimasi harga kendaraan lama Anda.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Berapa lama proses indent atau pengiriman kendaraan?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Untuk unit yang tersedia di stok showroom, pengiriman dapat dilakukan dalam 1–3 hari kerja setelah proses administrasi selesai. Untuk unit indent, estimasi waktu tergantung ketersediaan dari pabrik dan akan diinformasikan secara transparan oleh tim kami.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">
+          Apa yang membedakan Geely dengan merek otomotif lain di segmen yang sama?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Geely unggul dalam hal teknologi, desain premium, dan nilai jual yang kompetitif. Diperkuat oleh kemitraan global dengan Volvo Cars, Geely mengadopsi standar keselamatan dan rekayasa kelas dunia. Fitur canggih seperti ADAS, konektivitas cerdas, dan powertrain hybrid tersedia di harga yang lebih terjangkau dibanding kompetitor Eropa.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<button id="wa-fab" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25D366; color: white; border-radius: 50%; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+    <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+</button>
+
+<div id="wa-widget" style="display: none; position: fixed; bottom: 100px; right: 30px; width: 320px; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 9998; overflow: hidden; animation: popUpWA 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(0,0,0,0.05);">
+    
+    <div style="background: var(--black); color: #ffffff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 10px; height: 10px; background: #25D366; border-radius: 50%; box-shadow: 0 0 5px #25D366;"></div>
+            <span style="font-family: var(--display); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.05em;">Sales Geely Bandung</span>
+        </div>
+        <button id="close-wa-widget" style="background: none; border: none; color: rgba(255,255,255,0.6); font-size: 24px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.2s;">&times;</button>
+    </div>
+
+    <div style="padding: 20px;">
+        <p style="color: var(--g600); font-size: 0.85rem; margin-bottom: 16px; line-height: 1.5;">Halo! Ada yang bisa kami bantu? Silakan perkenalkan diri Anda terlebih dahulu.</p>
+        
+        <input type="text" id="wa-customer-name" placeholder="Nama Anda" style="width: 100%; padding: 12px 14px; margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; background: #f9f9f9; color: var(--black); transition: border 0.2s;">
+        
+        <textarea id="wa-customer-msg" placeholder="Ketik pesan Anda..." rows="3" style="width: 100%; padding: 12px 14px; margin-bottom: 16px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; resize: none; background: #f9f9f9; color: var(--black); transition: border 0.2s;"></textarea>
+        
+        <button id="send-wa-widget" style="width: 100%; background: #25D366; color: white; border: none; padding: 14px; border-radius: 8px; font-family: var(--display); font-weight: 600; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; transition: background 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            Mulai Percakapan
+        </button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1500px;margin:0 auto;">
+    <div class="foot-inner">
+      <p>© 2026 Geely Bandung. All Rights Reserved.</p>
+      <div class="foot-links">
+        <a href="#">Privacy</a>
+        <a href="https://wa.me/6285722667209" target="_blank">WhatsApp</a>
+        <a href="https://instagram.com/geely.srimulyani" target="_blank">Instagram</a>
+        <a href="https://tiktok.com/@geelybandungjabar" target="_blank">TikTok</a>
+      </div>
+    </div>
+    <div class="foot-dev">
+      <a href="https://diginexa.asia/" target="_blank" rel="noopener noreferrer">Developed by Diginexa Solusindo</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://gzgrqnxngelctwdmegva.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6Z3JxbnhuZ2VsY3R3ZG1lZ3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0OTkwNzcsImV4cCI6MjA5NzA3NTA3N30.X71JgALxRkoWcCqE8TnRd4RZr9d5M2lrrzX3ICbSFmg';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const waFab = document.getElementById('wa-fab');
+const waWidget = document.getElementById('wa-widget');
+const closeWaWidget = document.getElementById('close-wa-widget');
+const sendWaWidget = document.getElementById('send-wa-widget');
+
+waFab.addEventListener('click', () => {
+    if (waWidget.style.display === 'none' || waWidget.style.display === '') {
+        waWidget.style.display = 'block';
+        // Auto-focus ke input nama saat dibuka
+        setTimeout(() => document.getElementById('wa-customer-name').focus(), 100);
+    } else {
+        waWidget.style.display = 'none';
+    }
+});
+
+closeWaWidget.addEventListener('click', () => {
+    waWidget.style.display = 'none';
+});
+
+sendWaWidget.addEventListener('click', () => {
+    let customerName = document.getElementById('wa-customer-name').value.trim();
+    let customerMsg = document.getElementById('wa-customer-msg').value.trim();
+    
+    if (customerName === '') customerName = 'Pelanggan';
+    if (customerMsg === '') customerMsg = 'Halo, saya ingin menanyakan informasi mengenai mobil Geely.';
+
+    const noWa = "6285722667209"; 
+    
+    const textPesan = `Halo Sales Geely Bandung,%0A%0APerkenalkan saya *${customerName}*.%0A${customerMsg}`;
+    
+    window.open(`https://wa.me/${noWa}?text=${textPesan}`, '_blank');
+    
+    waWidget.style.display = 'none';
+    document.getElementById('wa-customer-name').value = '';
+    document.getElementById('wa-customer-msg').value = '';
+});
+
+async function loadGallery() {
+    const slider = document.querySelector('.gallery-slider');
+    slider.innerHTML = '';
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('testimonials')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        data.forEach((testi, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'gallery-slide';
+            slide.style = "min-width: 50%; display: flex; justify-content: center; padding: 0 8px;";
+            slide.innerHTML = `
+                <div class="gallery-item" style="width: 100%; aspect-ratio: 1080/1350; overflow: hidden; border-radius: 8px;">
+                    <img src="${testi.photo_url}" alt="Testimoni ${index + 1}" style="width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.25,.46,.45,.94);">
+                </div>
+            `;
+            slider.appendChild(slide);
+        });
+
+        initSlider();
+
+    } catch (err) {
+        console.error("Gagal memuat testimoni:", err);
+    }
+}
+
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+const dotsContainer = document.querySelector('.slider-dots');
+
+let currentSlide = 0;
+let slidesPerView = window.innerWidth > 640 ? 2 : 1;
+let totalSlides = 0;
+let visibleSlides = slidesPerView;
+
+function initSlider() {
+    const gallerySlider = document.querySelector('.gallery-slider');
+    const slides = document.querySelectorAll('.gallery-slide'); 
+    totalSlides = slides.length;
+    
+    updateDots(); 
+    updateSlider(); 
+}
+
+function updateSlider() {
+    const gallerySlider = document.querySelector('.gallery-slider');
+    const slideWidth = window.innerWidth > 640 ? 50 : 100;
+    gallerySlider.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+    
+    const currentPage = Math.floor(currentSlide / slidesPerView);
+    const dots = document.querySelectorAll('.slider-dots div');
+    dots.forEach((dot, index) => {
+        dot.style.background = index === currentPage ? 'var(--black)' : 'var(--g400)';
+    });
+}
+
+function updateDots() {
+    const dotsContainer = document.querySelector('.slider-dots');
+    dotsContainer.innerHTML = '';
+    const numPages = Math.ceil(totalSlides / slidesPerView);
+    for (let i = 0; i < numPages; i++) {
+        const dot = document.createElement('div');
+        dot.style.width = '12px'; dot.style.height = '12px'; dot.style.borderRadius = '50%';
+        dot.style.background = i === 0 ? 'var(--black)' : 'var(--g400)';
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => goToPage(i));
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function nextSlide() { if(totalSlides > 0) { currentSlide = (currentSlide + slidesPerView) % totalSlides; updateSlider(); }}
+function prevSlide() { if(totalSlides > 0) { currentSlide = (currentSlide - slidesPerView + totalSlides) % totalSlides; updateSlider(); }}
+function goToPage(pageIndex) { currentSlide = pageIndex * slidesPerView; updateSlider(); 
+
+}
+
+loadGallery();
+
+// Navbar scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>60);
+});
+
+// Mobile menu
+const ham=document.getElementById('ham'),mob=document.getElementById('mob'),mx=document.getElementById('mob-x');
+ham.addEventListener('click',()=>mob.classList.add('open'));
+mx.addEventListener('click',()=>mob.classList.remove('open'));
+document.querySelectorAll('.mob-lnk').forEach(a=>a.addEventListener('click',()=>mob.classList.remove('open')));
+
+// Scroll fade-in
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')});
+},{threshold:.12});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+// Form submit
+document.getElementById('cform').addEventListener('submit',e=>{
+  e.preventDefault();
+  const form=document.getElementById('cform');
+  const inputs=form.querySelectorAll('input, select, textarea');
+  let message='Halo Geely Bandung!%0A%0A';
+  message+='Nama: '+inputs[0].value+'%0A';
+  message+='Email: '+inputs[1].value+'%0A';
+  message+='Model: '+inputs[2].value+'%0A';
+  message+='Pesan: '+inputs[3].value;
+  window.open('https://wa.me/6285722667209?text='+message,'_blank');
+  const b=document.getElementById('sbtn');
+  b.textContent='Pesan Terkirim ✓';
+  b.classList.add('sent');
+  b.disabled=true;
+});
+
+// Zoom Modal for Pricelist image
+const zoomableImage = document.querySelector('.zoomable-image img');
+const zoomModal = document.getElementById('zoomModal');
+const zoomImage = document.getElementById('zoomImage');
+
+zoomableImage.addEventListener('click', () => {
+  zoomModal.style.display = 'flex';
+  zoomImage.src = zoomableImage.src;
+});
+
+zoomModal.addEventListener('click', () => {
+  zoomModal.style.display = 'none';
+});
+
+prevBtn.addEventListener('click', prevSlide);
+nextBtn.addEventListener('click', nextSlide);
+
+// Update on window resize
+function updateSlidesPerView() {
+  slidesPerView = window.innerWidth > 640 ? 2 : 1;
+  currentSlide = 0;
+  updateDots();
+  updateSlider();
+}
+window.addEventListener('resize', updateSlidesPerView);
+
+// Auto-slide (optional, 5 seconds)
+setInterval(nextSlide, 5000);
+
+// FAQ Accordion
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const answer = btn.nextElementSibling;
+    const isOpen = item.classList.contains('open');
+
+    // Close all open items
+    document.querySelectorAll('.faq-item.open').forEach(openItem => {
+      openItem.classList.remove('open');
+      openItem.querySelector('.faq-a').style.maxHeight = null;
+    });
+
+    // Toggle clicked item
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  });
+});
+</script>
+</body>
+</html>
